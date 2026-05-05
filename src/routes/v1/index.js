@@ -1,14 +1,7 @@
 const express = require('express');
-
+const { healthController } = require('../../controllers/');
 const router = express.Router();
 
-router.use('/healthy', (req, res) => {
-  console.log(`The response was healthy.`);
-  return res.status(200).json({
-    message: 'The response was healthy.',
-    data: {},
-    success: true,
-  });
-});
+router.use('/healthy', healthController.health);
 
 module.exports = router;
