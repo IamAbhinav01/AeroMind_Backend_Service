@@ -7,7 +7,9 @@ class CrudRepository {
   async create(data) {
     try {
       const response = await this.create(data);
-      LoggerConfig.info(`Successfully added data to the Database `);
+      LoggerConfig.info(
+        `Successfully added data to the Database --> repository layer`
+      );
       return response;
     } catch (error) {
       console.log('error occured while creating data to database');
