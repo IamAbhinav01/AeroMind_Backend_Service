@@ -1,9 +1,10 @@
 const { LoggerConfig } = require('../config');
-const AeroPlaneRepository = require('../repositories');
+const { AeroPlaneRepository } = require('../repositories');
 
 const createAeroplane = async (data) => {
   try {
-    const response = await AeroPlaneRepository.create(data);
+    const aeroPlaneRepository = new AeroPlaneRepository();
+    const response = await aeroPlaneRepository.create(data);
     LoggerConfig.info(`successfully created aeroplane data -->service layer`);
     return response;
   } catch (error) {

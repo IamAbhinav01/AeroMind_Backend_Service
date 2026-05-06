@@ -6,7 +6,7 @@ class CrudRepository {
   }
   async create(data) {
     try {
-      const response = await this.create(data);
+      const response = await this.model.create(data);
       LoggerConfig.info(
         `Successfully added data to the Database --> repository layer`
       );
@@ -21,4 +21,4 @@ class CrudRepository {
   }
 }
 
-module.exports = CrudRepository;
+module.exports = { CrudRepository };
