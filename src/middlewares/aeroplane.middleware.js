@@ -1,15 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
 const { LoggerConfig } = require('../config');
+const { errorResponse } = require('../utils/responseFormatter');
+const { ErrorHandler } = require('../errors');
 
 const validationModel = (req, res, next) => {
   if (!req.body.modelNumber) {
     LoggerConfig.error(`modelNumber not defined`);
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      success: false,
-      message: 'somethinf went wrong',
-      data: {},
-      error: `model number not defined`,
-    });
+    errorResponse.message = `model number is not defined`;
+    errorResponse.error = new ErrorHandler(
+      errorResponse.message,
+      StatusCodes.BAD_REQUEST
+    );
+    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
   }
   next();
 };
