@@ -13,7 +13,7 @@ async function createAeroplane(req, res) {
     LoggerConfig.info(
       `successfully send the data to service layer from controll layer`
     );
-    sucessResponse.data = response;
+    sucessResponse.data = reponse;
     sucessResponse.message = `successfully created an aeroplane model`;
     return res.status(StatusCodes.ACCEPTED).json(sucessResponse);
   } catch (error) {
@@ -28,9 +28,7 @@ async function createAeroplane(req, res) {
 }
 async function deleteAeroplane(req, res) {
   try {
-    const response = await this.AeroplaneService.destroyAeroplane(
-      req.params.id
-    );
+    const response = await AeroplaneService.destroyAeroplane(req.params.id);
     LoggerConfig.info(
       `successfully send the data to service layer from controll layer`
     );
@@ -47,4 +45,47 @@ async function deleteAeroplane(req, res) {
     return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
   }
 }
-module.exports = { createAeroplane, deleteAeroplane };
+async function getAllAeroplanes(req, res) {
+  try {
+    const response = await AeroplaneService.getAllAeroplanes();
+    LoggerConfig.info(
+      `successfully send the data to service layer from controll layer`
+    );
+    sucessResponse.data = response;
+    sucessResponse.message = `successfully fetched all aeroplanes`;
+    return res.status(StatusCodes.ACCEPTED).json(sucessResponse);
+  } catch (error) {
+    LoggerConfig.error(`somethign went wrong ERROR: ${error}`);
+    console.log(
+      `something went wrong while trying to send request to service layer ${error}`
+    );
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with fetching all aeroplanes`;
+    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+  }
+}
+async function getAeroplane(req, res) {
+  try {
+    const response = await AeroplaneService.getAeroplane(req.params.id);
+    LoggerConfig.info(
+      `successfully send the data to service layer from controll layer`
+    );
+    sucessResponse.data = response;
+    sucessResponse.message = `successfully fetched the aeroplane with id ${req.params.id}`;
+    return res.status(StatusCodes.ACCEPTED).json(sucessResponse);
+  } catch (error) {
+    LoggerConfig.error(`somethign went wrong ERROR: ${error}`);
+    console.log(
+      `something went wrong while trying to send request to service layer ${error}`
+    );
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with fetching the aeroplane`;
+    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+  }
+}
+module.exports = {
+  createAeroplane,
+  deleteAeroplane,
+  getAllAeroplanes,
+  getAeroplane,
+};
