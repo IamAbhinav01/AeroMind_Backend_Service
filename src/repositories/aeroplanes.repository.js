@@ -5,4 +5,4 @@ class AeroPlaneRepository extends CrudRepository {
     super(Airplane);
   }
 }
-module.exports = { AeroPlaneRepository };
+module.exports = AeroPlaneRepository;
