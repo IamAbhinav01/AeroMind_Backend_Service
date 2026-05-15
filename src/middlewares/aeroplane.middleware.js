@@ -5,7 +5,9 @@ const { ErrorHandler } = require('../errors');
 
 const validationModel = (req, res, next) => {
   if (!req.body.modelNumber) {
-    LoggerConfig.error(`modelNumber not defined`);
+    LoggerConfig.error(
+      `modelNumber not defined , ERROR Name: ${errorResponse.error.name} , ERROR Message : ${errorResponse.error.message}`
+    );
     errorResponse.message = `model number is not defined`;
     errorResponse.error = new ErrorHandler(
       errorResponse.message,

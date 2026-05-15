@@ -10,9 +10,17 @@ const createAeroplane = async (data) => {
     LoggerConfig.info(`successfully created aeroplane data -->service layer`);
     return response;
   } catch (error) {
-    console.log(`error occured ${error}`);
-    LoggerConfig.error(`error occured ERROR : ${error}`);
-    throw error;
+    let explanation = error.message;
+    let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+
+    if (error.name === 'SequelizeValidationError') {
+      explanation = error.errors.map((err) => err.message).join(', ');
+      statusCode = StatusCodes.BAD_REQUEST;
+    }
+
+    LoggerConfig.error(`error occured ERROR : ${error}
+      \n Error Name: ${error.name}`);
+    throw ErrorHandler(explanation, statusCode);
   }
 };
 const destroyAeroplane = async (modelId) => {
