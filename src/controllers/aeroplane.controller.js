@@ -26,7 +26,31 @@ async function createAeroplane(req, res) {
     return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
   }
 }
-
+async function updateAeroplane(req, res) {
+  try {
+    const response = await AeroplaneService.updateAeroplane(
+      {
+        modelNumber: req.body.modelNumber,
+        capacity: req.body.capacity,
+      },
+      req.params.id
+    );
+    LoggerConfig.info(
+      `successfully send the data to service layer from controll layer`
+    );
+    sucessResponse.data = response;
+    sucessResponse.message = `successfully updated the aeroplane model with id ${req.params.id}`;
+    return res.status(StatusCodes.ACCEPTED).json(sucessResponse);
+  } catch (error) {
+    LoggerConfig.error(`somethign went wrong ERROR: ${error}`);
+    console.log(
+      `something went wrong while trying to send request to service layer ${error}`
+    );
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with updating the aeroplane model`;
+    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+  }
+}
 async function deleteAeroplane(req, res) {
   try {
     const response = await AeroplaneService.destroyAeroplane(req.params.id);
@@ -89,4 +113,5 @@ module.exports = {
   deleteAeroplane,
   getAllAeroplanes,
   getAeroplane,
+  updateAeroplane,
 };

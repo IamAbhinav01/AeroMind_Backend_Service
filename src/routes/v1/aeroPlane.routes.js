@@ -9,6 +9,11 @@ router.post(
   aeroplaneController.createAeroplane
 );
 router.delete('/:id', aeroplaneController.deleteAeroplane);
+router.put(
+  '/:id',
+  aeroPlanemiddleWare.validationModel,
+  aeroplaneController.updateAeroplane
+);
 router.get('/', aeroplaneController.getAllAeroplanes);
 router.get('/:id', aeroplaneController.getAeroplane);
 
