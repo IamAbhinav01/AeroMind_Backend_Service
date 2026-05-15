@@ -21,7 +21,13 @@ class CrudRepository {
       throw error;
     }
   }
-  async update(data, modelId) {}
+  async update(data, modelId) {
+    const reposnse = await this.model.update(data, {
+      where: {
+        id: modelId,
+      },
+    });
+  }
   async destroy(modelId) {
     try {
       const response = await this.model.destroy({

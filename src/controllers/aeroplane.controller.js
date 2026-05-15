@@ -26,6 +26,7 @@ async function createAeroplane(req, res) {
     return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
   }
 }
+
 async function deleteAeroplane(req, res) {
   try {
     const response = await AeroplaneService.destroyAeroplane(req.params.id);

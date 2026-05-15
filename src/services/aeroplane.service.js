@@ -23,6 +23,24 @@ const createAeroplane = async (data) => {
     throw ErrorHandler(explanation, statusCode);
   }
 };
+const updateAeroplane = async (data, modelId) => {
+  try {
+    const aeroPlaneRepository = new AeroPlaneRepository();
+    const response = await aeroPlaneRepository.update(data, modelId);
+    LoggerConfig.info(
+      `successfully updated aeroplane data with id ${modelId} -->service layer`
+    );
+    return response;
+  } catch (error) {
+    LoggerConfig.error(
+      `error occured while updating the aeroplane data with id ${modelId} -->service layer ERROR : ${error}`
+    );
+    throw new ErrorHandler(
+      `error occured while updating the aeroplane data with id ${modelId} -->service layer ERROR : ${error}`,
+      StatusCodes.BAD_REQUEST
+    );
+  }
+};
 const destroyAeroplane = async (modelId) => {
   try {
     const aeroPlaneRepository = new AeroPlaneRepository();
@@ -83,4 +101,5 @@ module.exports = {
   destroyAeroplane,
   getAllAeroplanes,
   getAeroplane,
+  updateAeroplane,
 };
