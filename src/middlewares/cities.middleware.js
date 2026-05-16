@@ -3,18 +3,19 @@ const { LoggerConfig } = require('../config');
 const { errorResponse } = require('../utils/responseFormatter');
 const { ErrorHandler } = require('../errors');
 
-const validationModel = (req, res, next) => {
+const validateCity = (req, res, next) => {
   if (!req.body.name) {
+    const message = `cityName is not defined`;
+    const responsePayload = {
+      ...errorResponse,
+      message,
+      error: new ErrorHandler(message, StatusCodes.BAD_REQUEST),
+    };
     LoggerConfig.error(
-      `cityName not defined , ERROR Name: ${errorResponse.error.name} , ERROR Message : ${errorResponse.error.message}`
+      `cityName not defined , ERROR Name: ${responsePayload.error.name} , ERROR Message : ${responsePayload.error.message}`
     );
-    errorResponse.message = `cityName is not defined`;
-    errorResponse.error = new ErrorHandler(
-      errorResponse.message,
-      StatusCodes.BAD_REQUEST
-    );
-    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+    return res.status(StatusCodes.BAD_REQUEST).json(responsePayload);
   }
   next();
 };
-module.exports = { validationModel };
+module.exports = { validateCity };

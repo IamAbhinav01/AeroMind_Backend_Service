@@ -19,7 +19,7 @@ const createCity = async (data) => {
 
     LoggerConfig.error(`error occured ERROR : ${error}
       \n Error Name: ${error.name}`);
-    throw ErrorHandler(explanation, statusCode);
+    throw new ErrorHandler(explanation, statusCode);
   }
 };
 const updateCity = async (data, modelId) => {
