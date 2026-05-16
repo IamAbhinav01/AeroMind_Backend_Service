@@ -5,13 +5,13 @@ const router = express.Router();
 
 router.post(
   '/',
-  aeroPlanemiddleWare.validationModel,
+  aeroPlanemiddleWare.validateAeroplane,
   aeroplaneController.createAeroplane
 );
 router.delete('/:id', aeroplaneController.deleteAeroplane);
 router.put(
   '/:id',
-  aeroPlanemiddleWare.validationModel,
+  aeroPlanemiddleWare.validateAeroplane,
   aeroplaneController.updateAeroplane
 );
 router.get('/', aeroplaneController.getAllAeroplanes);

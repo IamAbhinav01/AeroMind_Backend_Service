@@ -3,18 +3,19 @@ const { LoggerConfig } = require('../config');
 const { errorResponse } = require('../utils/responseFormatter');
 const { ErrorHandler } = require('../errors');
 
-const validationModel = (req, res, next) => {
+const validateAeroplane = (req, res, next) => {
   if (!req.body.modelNumber) {
+    const message = `model number is not defined`;
+    const responsePayload = {
+      ...errorResponse,
+      message,
+      error: new ErrorHandler(message, StatusCodes.BAD_REQUEST),
+    };
     LoggerConfig.error(
-      `modelNumber not defined , ERROR Name: ${errorResponse.error.name} , ERROR Message : ${errorResponse.error.message}`
+      `modelNumber not defined , ERROR Name: ${responsePayload.error.name} , ERROR Message : ${responsePayload.error.message}`
     );
-    errorResponse.message = `model number is not defined`;
-    errorResponse.error = new ErrorHandler(
-      errorResponse.message,
-      StatusCodes.BAD_REQUEST
-    );
-    return res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+    return res.status(StatusCodes.BAD_REQUEST).json(responsePayload);
   }
   next();
 };
-module.exports = { validationModel };
+module.exports = { validateAeroplane };
