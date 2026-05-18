@@ -12,24 +12,28 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert('Cities', [
+    await queryInterface.bulkInsert('Airports', [
       {
-        name: 'New Delhi',
+        name: 'Cochin International Airport',
+        code: 'COK',
+        address: 'Nedumbassery, Kochi, Kerala, India',
+        cityId: 12,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: 'Mumbai',
+        name: 'Trivandrum International Airport',
+        code: 'TRV',
+        address: 'Thiruvananthapuram, Kerala, India',
+        cityId: 11,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: 'Trivandrum',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        name: 'Kochi',
+        name: 'Indira Gandhi International Airport',
+        code: 'DEL',
+        address: 'New Delhi, Delhi, India',
+        cityId: 9,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -43,6 +47,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Cities', null, {});
+    await queryInterface.bulkDelete('Airports', null, {});
   },
 };
