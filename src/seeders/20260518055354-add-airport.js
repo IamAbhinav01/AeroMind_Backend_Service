@@ -12,32 +12,45 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert('Airports', [
-      {
-        name: 'Cochin International Airport',
-        code: 'COK',
-        address: 'Nedumbassery, Kochi, Kerala, India',
-        cityId: 12,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        name: 'Trivandrum International Airport',
-        code: 'TRV',
-        address: 'Thiruvananthapuram, Kerala, India',
-        cityId: 11,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        name: 'Indira Gandhi International Airport',
-        code: 'DEL',
-        address: 'New Delhi, Delhi, India',
-        cityId: 9,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]);
+    const [cities] = await queryInterface.sequelize.query(
+      "SELECT id, name FROM Cities WHERE name IN ('Kochi', 'Trivandrum', 'New Delhi');"
+    );
+
+    const cityMap = cities.reduce((map, city) => {
+      map[city.name] = city.id;
+      return map;
+    }, {});
+
+    await queryInterface.bulkInsert(
+      'Airports',
+      [
+        {
+          name: 'Cochin International Airport',
+          code: 'COK',
+          address: 'Nedumbassery, Kochi, Kerala, India',
+          cityId: cityMap['Kochi'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: 'Trivandrum International Airport',
+          code: 'TRV',
+          address: 'Thiruvananthapuram, Kerala, India',
+          cityId: cityMap['Trivandrum'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: 'Indira Gandhi International Airport',
+          code: 'DEL',
+          address: 'New Delhi, Delhi, India',
+          cityId: cityMap['New Delhi'],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      {}
+    );
   },
 
   async down(queryInterface, Sequelize) {
