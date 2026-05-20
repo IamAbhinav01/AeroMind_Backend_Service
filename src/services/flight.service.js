@@ -22,4 +22,38 @@ const createFlight = async (data) => {
     throw new ErrorHandler(explanation, statusCode);
   }
 };
-module.exports = { createFlight };
+const getAllFlights = async (query) => {
+  try {
+    let filtersObject = {};
+    let sortObject = [];
+    if (query.trips) {
+      [departureAirportId, arrivalAirportId] = query.trips.split('-');
+      filtersObject = {
+        departureAirportId: departureAirportId,
+        arrivalAirportId: arrivalAirportId,
+      };
+      if (departureAirportId == arrivalAirportId) {
+        LoggerConfig.error(`Departure and Arrival airport cannot be same`);
+        throw new ErrorHandler(
+          `Departure and Arrival airport cannot be same`,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+    }
+    const flightRepository = new FlightRepository();
+    const flights = await flightRepository.getAllFlights(
+      filtersObject,
+      sortObject
+    );
+    return flights;
+  } catch (error) {
+    LoggerConfig.error(
+      `error occured while fetching the flight data from database ERROR : ${error}`
+    );
+    throw new ErrorHandler(
+      `error occured while fetching the flight data from database ERROR : ${error}`,
+      StatusCodes.BAD_REQUEST
+    );
+  }
+};
+module.exports = { createFlight, getAllFlights };

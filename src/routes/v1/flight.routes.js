@@ -8,5 +8,5 @@ router.post(
   flightMiddleware.validateFlight,
   flightController.createFlight
 );
-
+router.get('/', flightController.getAllFlights);
 module.exports = router;
