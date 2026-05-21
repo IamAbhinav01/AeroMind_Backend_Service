@@ -2,9 +2,11 @@ const { StatusCodes } = require('http-status-codes');
 const { LoggerConfig } = require('../config');
 const { errorResponse } = require('../utils/responseFormatter');
 const { ErrorHandler } = require('../errors');
+const { airportConstants } = require('../utils/common');
+const { Name, Code, CityId } = airportConstants;
 
 const validateAirport = (req, res, next) => {
-  const requiredFields = ['name', 'code', 'cityId'];
+  const requiredFields = [Name, Code, CityId];
 
   for (const field of requiredFields) {
     if (!req.body[field]) {

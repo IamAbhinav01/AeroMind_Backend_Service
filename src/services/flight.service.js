@@ -2,6 +2,8 @@ const { StatusCodes } = require('http-status-codes');
 const { ErrorHandler } = require('../errors');
 const { LoggerConfig } = require('../config');
 const FlightRepository = require('../repositories/flight.repository');
+const { Op } = require('sequelize');
+const { errorResponse } = require('../utils/responseFormatter');
 
 const createFlight = async (data) => {
   try {
@@ -26,6 +28,8 @@ const getAllFlights = async (query) => {
   try {
     let filtersObject = {};
     let sortObject = [];
+    let departureAirportId;
+    let arrivalAirportId;
     if (query.trips) {
       [departureAirportId, arrivalAirportId] = query.trips.split('-');
       filtersObject = {
@@ -40,6 +44,53 @@ const getAllFlights = async (query) => {
         );
       }
     }
+    if (query.sort) {
+      const [sortField, sortDirection = 'ASC'] = query.sort.split(',');
+      const field = sortField.trim();
+      const direction = sortDirection.trim().toUpperCase();
+      const allowedFields = [
+        'price',
+        'departureTime',
+        'arrivalTime',
+        'flightNumber',
+        'totalSeats',
+      ];
+      const allowedDirections = ['ASC', 'DESC'];
+      if (!allowedFields.includes(field)) {
+        throw new ErrorHandler(
+          `Invalid sort field: ${field}. Allowed fields: ${allowedFields.join(
+            ', '
+          )}`,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+      if (!allowedDirections.includes(direction)) {
+        throw new ErrorHandler(
+          `Invalid sort direction: ${direction}. Use ASC or DESC`,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+      sortObject.push([field, direction]);
+    }
+    if (query.price) {
+      [minPrice, maxPrice] = query.price.split('-');
+      filtersObject.price = {
+        [Op.between]: [minPrice, maxPrice],
+      };
+    }
+    if (query.travellers) {
+      filtersObject.totalSeats = {
+        [Op.gte]: parseInt(query.travellers),
+      };
+    }
+    if (query.tripDate) {
+      const departureDate = new Date(query.tripDate);
+      const nextDate = new Date(departureDate);
+      nextDate.setDate(departureDate.getDate() + 1);
+      filtersObject.departureTime = {
+        [Op.between]: [departureDate, nextDate],
+      };
+    }
     const flightRepository = new FlightRepository();
     const flights = await flightRepository.getAllFlights(
       filtersObject,
@@ -50,10 +101,9 @@ const getAllFlights = async (query) => {
     LoggerConfig.error(
       `error occured while fetching the flight data from database ERROR : ${error}`
     );
-    throw new ErrorHandler(
-      `error occured while fetching the flight data from database ERROR : ${error}`,
-      StatusCodes.BAD_REQUEST
-    );
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with fetching the flight data from database`;
+    throw new ErrorHandler(errorResponse, StatusCodes.BAD_REQUEST);
   }
 };
 module.exports = { createFlight, getAllFlights };
