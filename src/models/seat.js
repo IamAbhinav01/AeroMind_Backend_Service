@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       row: { type: DataTypes.INTEGER, allowNull: false },
       col: { type: DataTypes.STRING, allowNull: false },
       airplaneId: { type: DataTypes.INTEGER, allowNull: false },
-
       type: {
         type: DataTypes.ENUM,
         values: ['ECONOMY', 'BUISNESS', 'FIRST-CLASS'],
