@@ -2,18 +2,29 @@ const { StatusCodes } = require('http-status-codes');
 const { LoggerConfig } = require('../config');
 const { errorResponse } = require('../utils/responseFormatter');
 const { ErrorHandler } = require('../errors');
-
+const { flightConstants } = require('../utils/common');
+const {
+  FlightNumber,
+  AirplaneId,
+  DepartureAirportId,
+  ArrivalAirportId,
+  ArrivalTime,
+  DepartureTime,
+  Price,
+  BoardingGate,
+  TotalSeats,
+} = flightConstants;
 const validateFlight = (req, res, next) => {
   const requiredFields = [
-    'flightNumber',
-    'airplaneId',
-    'departureAirportId',
-    'arrivalAirportId',
-    'arrivalTime',
-    'departureTime',
-    'price',
-    'boardingGate',
-    'totalSeats',
+    FlightNumber,
+    AirplaneId,
+    DepartureAirportId,
+    ArrivalAirportId,
+    ArrivalTime,
+    DepartureTime,
+    Price,
+    BoardingGate,
+    TotalSeats,
   ];
 
   for (const field of requiredFields) {
