@@ -21,10 +21,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      class: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       type: {
         type: Sequelize.ENUM,
         allowNull: false,
