@@ -131,4 +131,20 @@ const getFlight = async (id) => {
     throw new ErrorHandler(explanation, statusCode);
   }
 };
-module.exports = { createFlight, getAllFlights, getFlight };
+const updateSeats = async (flightId, seats, dec) => {
+  try {
+    const flightRepository = new FlightRepository();
+    const response = await flightRepository.updateSeats(flightId, seats, dec);
+    LoggerConfig.info(`successfully updated seats data -->service layer`);
+    return response;
+  } catch (error) {
+    let explanation = error.message;
+    let statusCode = StatusCodes.BAD_REQUEST;
+
+    LoggerConfig.error(
+      `error occured ERROR : ${error} \n Error Name: ${error.name}`
+    );
+    throw new ErrorHandler(explanation, statusCode);
+  }
+};
+module.exports = { createFlight, getAllFlights, getFlight, updateSeats };

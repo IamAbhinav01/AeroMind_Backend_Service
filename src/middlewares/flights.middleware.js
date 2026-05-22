@@ -14,7 +14,7 @@ const {
   BoardingGate,
   TotalSeats,
 } = flightConstants;
-const validateFlight = (req, res, next) => {
+const validateCreationFlight = (req, res, next) => {
   const requiredFields = [
     FlightNumber,
     AirplaneId,
@@ -44,4 +44,19 @@ const validateFlight = (req, res, next) => {
   }
   next();
 };
-module.exports = { validateFlight };
+const validateUpdateSeats = (req, res, next) => {
+  if (req.body.seats === undefined) {
+    const message = `seats is not defined`;
+    const responsePayload = {
+      ...errorResponse,
+      message,
+      error: new ErrorHandler(message, StatusCodes.BAD_REQUEST),
+    };
+    LoggerConfig.error(
+      `seat not defined , ERROR Name: ${responsePayload.error.name} , ERROR Message : ${responsePayload.error.message}`
+    );
+    return res.status(StatusCodes.BAD_REQUEST).json(responsePayload);
+  }
+  next();
+};
+module.exports = { validateCreationFlight, validateUpdateSeats };

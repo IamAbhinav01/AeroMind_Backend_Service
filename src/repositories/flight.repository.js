@@ -53,5 +53,28 @@ class FlightRepository extends CrudRepository {
       );
     }
   }
+  async updateSeats(flightId, seats, dec = true) {
+    try {
+      const flightObject = await Flight.findByPk(flightId);
+      if (dec == true || dec == 'true' || dec == 1) {
+        const response = await flightObject.decrement('totalSeats', {
+          by: seats,
+        });
+        LoggerConfig.info(`successfully update response`);
+        return response;
+      } else {
+        const response = await flightObject.increment('totalSeats', {
+          by: seats,
+        });
+        LoggerConfig.info(`successfully update response`);
+        return response;
+      }
+    } catch (error) {
+      let explanation = error.message;
+      let statusCodes = error.statusCodes;
+      LoggerConfig.error(`error occured while updating seats`);
+      throw new ErrorHandler(explanation, statusCodes);
+    }
+  }
 }
 module.exports = FlightRepository;
