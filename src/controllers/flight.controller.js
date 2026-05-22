@@ -29,6 +29,18 @@ async function getAllFlights(req, res) {
   try {
     const flights = await FlightService.getAllFlights(req.query);
     sucessResponse.data = flights;
+    sucessResponse.message = `successfully fetched the flights data`;
+    return res.status(StatusCodes.OK).json(sucessResponse);
+  } catch (error) {
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with fetching the flight data`;
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
+  }
+}
+async function getFlight(req, res) {
+  try {
+    const flight = await FlightService.getFlight(req.params.id);
+    sucessResponse.data = flight;
     sucessResponse.message = `successfully fetched the flight data`;
     return res.status(StatusCodes.OK).json(sucessResponse);
   } catch (error) {
@@ -40,4 +52,5 @@ async function getAllFlights(req, res) {
 module.exports = {
   createFlight,
   getAllFlights,
+  getFlight,
 };

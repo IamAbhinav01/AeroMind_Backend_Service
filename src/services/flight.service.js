@@ -106,4 +106,29 @@ const getAllFlights = async (query) => {
     throw new ErrorHandler(errorResponse, StatusCodes.BAD_REQUEST);
   }
 };
-module.exports = { createFlight, getAllFlights };
+
+const getFlight = async (id) => {
+  try {
+    const flightRepository = await new FlightRepository();
+    const response = await flightRepository.getById(id);
+    if (!response) {
+      let explanation = `Error finding the data you requested, check the id`;
+      let statusCode = StatusCodes.BAD_REQUEST;
+      LoggerConfig.error(
+        `error occured ERROR : No ID FOUND  \n Error Name: Invalid ID`
+      );
+      throw new ErrorHandler(explanation, statusCode);
+    }
+    LoggerConfig.info(`successfully get flight data -->service layer`);
+    return response;
+  } catch (error) {
+    let explanation = error.message;
+    let statusCode = StatusCodes.BAD_REQUEST;
+
+    LoggerConfig.error(
+      `error occured ERROR : ${error} \n Error Name: ${error.name}`
+    );
+    throw new ErrorHandler(explanation, statusCode);
+  }
+};
+module.exports = { createFlight, getAllFlights, getFlight };
