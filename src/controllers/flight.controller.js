@@ -37,6 +37,24 @@ async function getAllFlights(req, res) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
   }
 }
+async function updateSeats(req, res) {
+  try {
+    const flight = await FlightService.updateSeats(
+      req.params.id,
+      req.body.seats,
+      req.body.dec
+    );
+    console.log(req.body);
+    console.log(req.params);
+    sucessResponse.data = flight;
+    sucessResponse.message = `successfully updated the flight seats`;
+    return res.status(StatusCodes.OK).json(sucessResponse);
+  } catch (error) {
+    errorResponse.data = error;
+    errorResponse.message = `something went wrong with fetching the flight data`;
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
+  }
+}
 module.exports = {
   createFlight,
   getAllFlights,
