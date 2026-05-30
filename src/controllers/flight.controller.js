@@ -56,6 +56,8 @@ async function updateSeats(req, res) {
       req.body.seats,
       req.body.dec
     );
+    console.log(req.body);
+    console.log(req.params);
     sucessResponse.data = flight;
     sucessResponse.message = `successfully updated the flight seats`;
     return res.status(StatusCodes.OK).json(sucessResponse);
