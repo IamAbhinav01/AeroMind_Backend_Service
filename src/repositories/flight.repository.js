@@ -58,15 +58,47 @@ class FlightRepository extends CrudRepository {
   async updateSeats(flightId, seats, dec = true) {
     const t = await db.sequelize.transaction();
     try {
+
+      // No other transaction can read or write this row until we commit/rollback.
       await db.sequelize.query(FlightQuery(flightId), { transaction: t });
 
       const flightObject = await Flight.findByPk(flightId, { transaction: t });
-      if (dec === true || dec === 'true' || dec === 1) {
+
+      if (!flightObject) {
+        await t.rollback();
+        throw new ErrorHandler(
+          `Flight with id ${flightId} not found`,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      const isDecrement = dec === true || dec === 'true' || dec === 1;
+
+      // ── Seat availability check lives INSIDE the lock ────────────────────────
+      // This is the critical fix: the check and the update are now atomic.
+      // Between the FOR UPDATE lock above and this point, no other transaction
+      // can sneak in and read a stale seat count — eliminating the race condition.
+      if (isDecrement && flightObject.totalSeats < seats) {
+        await t.rollback();
+        LoggerConfig.error(
+          `[Lock] Insufficient seats for flight ${flightId}: ` +
+          `requested ${seats}, available ${flightObject.totalSeats}`
+        );
+        throw new ErrorHandler(
+          `Not enough seats. Requested: ${seats}, Available: ${flightObject.totalSeats}`,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      if (isDecrement) {
         const response = await flightObject.decrement('totalSeats', {
           by: seats,
           transaction: t,
         });
-        LoggerConfig.info(`successfully update response`);
+        LoggerConfig.info(
+          `[Lock] Decremented ${seats} seats for flight ${flightId}. ` +
+          `Remaining: ${flightObject.totalSeats - seats}`
+        );
         await t.commit();
         return response;
       } else {
@@ -74,16 +106,23 @@ class FlightRepository extends CrudRepository {
           by: seats,
           transaction: t,
         });
-        LoggerConfig.info(`successfully update response`);
+        LoggerConfig.info(
+          `[Lock] Restored ${seats} seats for flight ${flightId}. ` +
+          `New total: ${flightObject.totalSeats + seats}`
+        );
         await t.commit();
         return response;
       }
     } catch (error) {
-      let explanation = error.message;
-      let statusCodes = error.statusCodes;
-      LoggerConfig.error(`error occured while updating seats`);
-      await t.rollback();
-      throw new ErrorHandler(explanation, statusCodes);
+      try {
+        await t.rollback();
+      } catch (rollbackError) {
+        LoggerConfig.error(`[Lock] Rollback failed: ${rollbackError.message}`);
+      }
+      LoggerConfig.error(`[Lock] Error in updateSeats: ${error.message}`);
+      // Re-throw ErrorHandler instances as-is so the controller gets the right status code
+      if (error instanceof ErrorHandler) throw error;
+      throw new ErrorHandler(error.message, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 }

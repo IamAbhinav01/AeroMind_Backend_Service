@@ -56,15 +56,15 @@ async function updateSeats(req, res) {
       req.body.seats,
       req.body.dec
     );
-    console.log(req.body);
-    console.log(req.params);
     sucessResponse.data = flight;
     sucessResponse.message = `successfully updated the flight seats`;
     return res.status(StatusCodes.OK).json(sucessResponse);
   } catch (error) {
     errorResponse.data = error;
-    errorResponse.message = `something went wrong with fetching the flight data`;
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
+    errorResponse.message = error.message || `something went wrong with updating the flight seats`;
+    return res
+      .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(errorResponse);
   }
 }
 module.exports = {
