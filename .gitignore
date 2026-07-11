@@ -1,6 +1,6 @@
 .env
 node_modules
 app.log
-src/config/config.json
+
 README.md
 filters.md
