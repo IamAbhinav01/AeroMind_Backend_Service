@@ -16,7 +16,7 @@ module.exports = {
       {
         row: 1,
         col: 'A',
-        airplaneId: 9,
+        airplaneId: 1,
         type: 'BUISNESS',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -24,7 +24,7 @@ module.exports = {
       {
         row: 1,
         col: 'C',
-        airplaneId: 9,
+        airplaneId: 1,
         type: 'FIRST-CLASS',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -32,7 +32,7 @@ module.exports = {
       {
         row: 1,
         col: 'D',
-        airplaneId: 10,
+        airplaneId: 2,
         type: 'ECONOMY',
         createdAt: new Date(),
         updatedAt: new Date(),
