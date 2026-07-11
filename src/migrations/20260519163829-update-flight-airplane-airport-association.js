@@ -11,30 +11,30 @@ module.exports = {
      */
     await queryInterface.addConstraint('Flights', {
       type: 'foreign key',
-      name: 'flight_airplane_association',
+      name: 'flight_airplane_fk_new',
       fields: ['airplaneId'],
       references: {
-        table: 'airplanes',
+        table: 'Airplanes',
         field: 'id',
       },
       onDelete: 'CASCADE',
     });
     await queryInterface.addConstraint('Flights', {
       type: 'foreign key',
-      name: 'flight_airportArrivalID_association',
+      name: 'flight_airportArrivalID_fk_new',
       fields: ['arrivalAirportId'],
       references: {
-        table: 'airports',
+        table: 'Airports',
         field: 'code',
       },
       onDelete: 'CASCADE',
     });
     await queryInterface.addConstraint('Flights', {
       type: 'foreign key',
-      name: 'flight_airportDepartureID_association',
+      name: 'flight_airportDepartureID_fk_new',
       fields: ['departureAirportId'],
       references: {
-        table: 'airports',
+        table: 'Airports',
         field: 'code',
       },
       onDelete: 'CASCADE',

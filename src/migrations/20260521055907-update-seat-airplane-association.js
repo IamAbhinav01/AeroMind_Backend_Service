@@ -13,10 +13,10 @@ module.exports = {
      */
     await queryInterface.addConstraint('Seats', {
       type: 'foreign key',
-      name: 'seat_airplane_association',
+      name: 'seat_airplane_fk_new',
       fields: ['airplaneId'],
       references: {
-        table: 'airplanes',
+        table: 'Airplanes',
         field: 'id',
       },
       onDelete: 'CASCADE',
